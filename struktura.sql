@@ -1,6 +1,6 @@
 CREATE TABLE Cities(
 	CityId SERIAL PRIMARY KEY,
-	Name VARCHAR NOT NULL,
+	Name VARCHAR NOT NULL UNIQUE,
 	GeoLocation POINT
 );
 
@@ -28,7 +28,15 @@ CREATE TABLE Planes(
 	AirlineId INT REFERENCES Airlines(AirlineId)
 );
 
-
+CREATE TABLE Flights(
+	FlightId SERIAL PRIMARY KEY,
+	PlaneId INT REFERENCES Planes(PlaneId),
+	TimeOfDeparture TIMESTAMP,
+	TimeOfArrival TIMESTAMP,
+	PlaceOfDeparture VARCHAR REFERENCES Cities(Name),
+	PlaceOfArrival vARCHAR REFERENCES Cities(Name),
+	TicketsSold INT
+);
 
 CREATE TABLE Users(
 	UserId SERIAL PRIMARY KEY,
@@ -49,13 +57,7 @@ CREATE TABLE Crewmembers(
 	IsFemale BOOL
 );
 
-CREATE TABLE Flights(
-	FlightId SERIAL PRIMARY KEY,
-	PlaneId INT REFERENCES Planes(PlaneId),
-	TimeOfDeparture TIMESTAMP,
-	TimeOfArrival TIMESTAMP,
-	TicketsSold INT
-);
+
 
 CREATE TABLE Tickets(
 	TicketId SERIAL PRIMARY KEY,
