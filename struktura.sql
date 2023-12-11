@@ -48,7 +48,8 @@ CREATE TABLE Users(
 CREATE TABLE Pilots(
 	PilotId SERIAL PRIMARY KEY,
 	Name VARCHAR NOT NULL,
-	DateOfBirth TIMESTAMP
+	DateOfBirth TIMESTAMP,
+	Paycheck INT
 );
 
 CREATE TABLE Crewmembers(

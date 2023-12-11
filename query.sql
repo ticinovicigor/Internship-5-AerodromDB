@@ -30,12 +30,20 @@ WHERE fl.PlaceOfArrival = 'Vienna' AND DATE_PART('month', fl.TimeOfArrival) = 12
 ---ispis svih aerodroma udaljenih od Splita manje od 1500km
 
 ---smanjite cijenu za 20% svim kartama čiji letovi imaju manje od 20 ljudi
-
+UPDATE Tickets
+	SET Price = Price * 0.8
+	WHERE (SELECT COUNT(*) FROM Tickets tk WHERE FlightId = tk.FlightId) < 20
 
 ---povisite plaću za 100 eura svim pilotima koji su ove godine imali više od 10 letova duljih od 10 sati
+---UPDATE Pilots
+---	SET Paycheck = Paycheck + 100
+---	WHERE (SELECT COUNT(*) FROM Flights) > 10
+---FLIGHTPILOTS!!!
 
 ---razmontirajte avione starije od 20 godina koji nemaju letove pred sobom
-
+UPDATE Planes
+	SET PlaneCondition = 'razmontiran'
+	WHERE 
 ---izbrišite sve letove koji nemaju ni jednu prodanu kartu
 
 ---izbrišite sve kartice vjernosti putnika čije prezime završava na -ov/a, -in/a
