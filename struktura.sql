@@ -20,7 +20,7 @@ CREATE TABLE Airlines(
 
 CREATE TABLE Planes(
 	PlaneId SERIAL PRIMARY KEY,
-	Name VARCHAR NOT NULL,
+	name VARCHAR NOT NULL,
 	Model VARCHAR NOT NULL,
 	PlaneCondition VARCHAR NOT NULL,
 	BusinessCapacity INT,
@@ -34,16 +34,15 @@ CREATE TABLE Flights(
 	PlaneId INT REFERENCES Planes(PlaneId),
 	TimeOfDeparture TIMESTAMP,
 	TimeOfArrival TIMESTAMP,
-	PlaceOfDeparture VARCHAR REFERENCES Cities(Name),
-	PlaceOfArrival vARCHAR REFERENCES Cities(Name)
+	PlaceOfDeparture INT REFERENCES Cities(CityId),
+	PlaceOfArrival INT REFERENCES Cities(CityId)
 );
 
 
 
 CREATE TABLE Users(
 	UserId SERIAL PRIMARY KEY,
-	Name VARCHAR NOT NULL,
-	TicketsPurchased INT
+	Name VARCHAR NOT NULL
 );
 
 CREATE TABLE LoyaltyCards(

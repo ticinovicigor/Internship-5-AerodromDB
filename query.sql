@@ -22,11 +22,17 @@ SELECT * FROM Crewmembers cw
 
 ---ispis broja letova u Split/iz Splita 2023. godine
 SELECT Count(*) FROM Flights fl
-WHERE ((fl.PlaceOfArrival = 'Split' OR fl.PlaceOfDeparture = 'Split')  AND DATE_PART('year', fl.TimeOfArrival) = 2023)
+WHERE ((SELECT COUNT(*) FROM Cities ct
+	   WHERE ct.Name = 'Split' 
+	   AND(fl.PlaceOfArrival = ct.CityId OR fl.PlaceOfDeparture = ct.CityId))>0  
+	   AND DATE_PART('year', fl.TimeOfArrival) = 2023)
 
 ---ispis svih letova za Beč u prosincu 2023.
 SELECT * FROM Flights fl
-WHERE fl.PlaceOfArrival = 'Vienna' AND DATE_PART('month', fl.TimeOfArrival) = 12
+WHERE (SELECT COUNT(*) FROM Cities ct
+	   WHERE ct.Name = 'Vienna' 
+	   AND(fl.PlaceOfArrival = ct.CityId))>0 
+	   AND DATE_PART('month', fl.TimeOfArrival) = 12
 
 ---ispis broj prodanih Economy letova kompanije AirDUMP u 2021.
 SELECT COUNT(*) FROM Tickets tk
@@ -40,13 +46,15 @@ WHERE tk.IsBusiness = FALSE
 SELECT AVG(Grade) FROM Tickets tk
 WHERE (SELECT COUNT(*) FROM Flights ft WHERE ft.FlightId = tk.FlightId 
 	   AND(SELECT COUNT(*) FROM Planes pl WHERE pl.PlaneId = ft.FlightId
-	   AND(SELECT COUNT(*) FROM Airlines al WHERE al.AirlineId = pl.AirlineId AND al.Name = 'DUMPAir')>0)>0)>0
+	   AND(SELECT COUNT(*) FROM Airlines al WHERE al.AirlineId = pl.AirlineId AND al.Name = 'AirDUMP')>0)>0)>0
 
 ---ispis svih aerodroma u Londonu, sortiranih po broju Airbus aviona trenutno na njihovim pistama
 SELECT * FROM Airports ap
-WHERE 
-
----ispis svih aerodroma udaljenih od Splita manje od 1500km
+WHERE (SELECT COUNT(*) FROM Cities ct WHERE ct.Name = 'London' AND ct.CityId = ap.CityId)>0
+ORDER BY (SELECT COUNT(*) FROM Flights ft 
+		  WHERE DATE_PART('minute', ft.TimeOfDeparture - NOW()) BETWEEN 0 AND 30
+		  AND (SELECT COUNT(*) FROM Planes pl WHERE pl.PlaneId = ft.FlightId AND pl.Model = 'Airbus') > 0
+		 ) DESC
 
 ---smanjite cijenu za 20% svim kartama čiji letovi imaju manje od 20 ljudi
 UPDATE Tickets
