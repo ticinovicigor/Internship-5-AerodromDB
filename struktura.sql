@@ -15,7 +15,7 @@ CREATE TABLE Airports(
 
 CREATE TABLE Airlines(
 	AirlineId SERIAL PRIMARY KEY,
-	Name VARCHAR NOT NULL
+	Name VARCHAR NOT NULL UNIQUE
 );
 
 CREATE TABLE Planes(
@@ -25,7 +25,8 @@ CREATE TABLE Planes(
 	PlaneCondition VARCHAR NOT NULL,
 	BusinessCapacity INT,
 	EconomyCapacity INT,
-	AirlineId INT REFERENCES Airlines(AirlineId)
+	AirlineId INT REFERENCES Airlines(AirlineId),
+	DateOfManufacture TIMESTAMP
 );
 
 CREATE TABLE Flights(
@@ -34,22 +35,29 @@ CREATE TABLE Flights(
 	TimeOfDeparture TIMESTAMP,
 	TimeOfArrival TIMESTAMP,
 	PlaceOfDeparture VARCHAR REFERENCES Cities(Name),
-	PlaceOfArrival vARCHAR REFERENCES Cities(Name),
-	TicketsSold INT
+	PlaceOfArrival vARCHAR REFERENCES Cities(Name)
 );
+
+
 
 CREATE TABLE Users(
 	UserId SERIAL PRIMARY KEY,
 	Name VARCHAR NOT NULL,
-	TicketsPurchased INT,
-	HasLoyaltyCard BOOL
+	TicketsPurchased INT
+);
+
+CREATE TABLE LoyaltyCards(
+	LoyaltyCardId SERIAL PRIMARY KEY,
+	UserId INT REFERENCES Users(UserId),
+	ExpirationDate TIMESTAMP
 );
 
 CREATE TABLE Pilots(
 	PilotId SERIAL PRIMARY KEY,
 	Name VARCHAR NOT NULL,
 	DateOfBirth TIMESTAMP,
-	Paycheck INT
+	Paycheck INT,
+	IsFemale BOOL
 );
 
 CREATE TABLE Crewmembers(
@@ -64,6 +72,22 @@ CREATE TABLE Tickets(
 	TicketId SERIAL PRIMARY KEY,
 	FlightId INT REFERENCES Flights(FlightId),
 	Price FLOAT,
+	IsBusiness BOOL,
 	UserId INT REFERENCES Users(UserId),
-	Grade INT
+	Grade INT,
+	DateOfPurchase TIMESTAMP
+);
+
+CREATE TABLE PilotFlights(
+	PilotId INT REFERENCES Pilots(PilotId),
+	FlightId INT REFERENCES Flights(FlightId),
+	
+	PRIMARY KEY(PilotId, FlightId)
+);
+
+CREATE TABLE CrewmemberFlights(
+	CrewmemberId INT REFERENCES Crewmembers(CrewmemberId),
+	FlightId INT REFERENCES Flights(FlightId),
+	
+	PRIMARY KEY(CrewmemberId, FlightId)
 );
