@@ -34,10 +34,12 @@ CREATE TABLE Flights(
 	PlaneId INT REFERENCES Planes(PlaneId),
 	TimeOfDeparture TIMESTAMP,
 	TimeOfArrival TIMESTAMP,
-	PlaceOfDeparture INT REFERENCES Cities(CityId),
-	PlaceOfArrival INT REFERENCES Cities(CityId)
+	PlaceOfDeparture INT REFERENCES Airports(AirportId),
+	PlaceOfArrival INT REFERENCES Airports(AirportId)
 );
 
+---ALTER TABLE Flights
+	---ADD CONSTRAINT PlaneActivity CHECK((SELECT COUNT(*) FROM Planes pl WHERE pl.PlaneId = PlaneId AND pl.PlaneCondition = 'aktivan')>0)
 
 
 CREATE TABLE Users(
